@@ -22,7 +22,7 @@ The following is an example of the function calls needed to load a video `walk-s
 
 ## Installation
 
-To use this framework, download:
+At first, download:
 
 - this repository as a ZIP file
 - the ShearLab3D code from the website http://www.shearlab.org/ 
@@ -30,7 +30,3 @@ To use this framework, download:
 Unpack the archives in a directory, then add all the source files to the MATLAB path by clicking on "Add to Path -> Selected Folder and Subfolders" in the MATLAB file browser (alternatively, you can use the `addpath(genpath(your_root_folder))` in the MATLAB command prompt). 
 
 To start using the framework remember that you need to have within your MATLAB path also the video sequences you want to process.
-
-## License
-
-A short snippet describing the license (MIT, Apache, etc.)
