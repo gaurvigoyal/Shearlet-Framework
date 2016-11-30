@@ -11,7 +11,7 @@ clear VID COEFFS idxs
 % loads the indexes for the 5x5 shearing matrices,
 % corresponding to the second scale and to the three cones
 
-load('cone_indexes_for_5x5_shearings.mat')
+load('cone_indexes_for_5x5_shearings_scale2.mat')
 
 ind_cone1_sc2 = c1(:);
 ind_cone2_sc2 = c2(:);

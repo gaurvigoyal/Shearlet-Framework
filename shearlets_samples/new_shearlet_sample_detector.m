@@ -33,16 +33,13 @@ close all;
 
 %%
 
-close all;
-comparison_heatmap_from_points(VID, floor(COORDINATES));
-
-%%
-
 comparison_local_maxima_in_frame(VID(:,:,1:91), COLOR_VID(:,:,:,1:91), CHANGE_MAP, LOWER_THRESHOLD, SPT_WINDOW, PAUSE_BETWEEN_FRAMES, 3, colormap(jet(256)));  % buono boxing? centrato in 46, SCALA 2
 
 %%
 
 close all;
+
+load('kth_bg_averaged.mat');
 
 [~, FG_CENTROIDS] = comparison_mask_from_kth_video(VID(:,:,1:91), bg_averaged, 90);
 [TRANSLATED] = comparison_translate_points_by_centroid(COORDINATES, FG_CENTROIDS, VID);
@@ -70,10 +67,6 @@ imshow(COLOR_VID(:,:,:,COUNTS_IND(3))./255);
 
 subplot(1,4,4);
 imshow(COLOR_VID(:,:,:,COUNTS_IND(4))./255);
-
-%% 
-
-[POINTS_HEATMAP] = comparison_heatmap_from_points(VID, COORDINATES);
 
 %%
 
@@ -114,5 +107,4 @@ comparison_3d_visualization_from_points(VIS_FG_MASKS, COORDINATES, permuted);
 
 close all;
 
-shearlet_visualize_change_map( VID(:,:,1:91), change_map_sc2, 3, colormap(jet(256)));
-% shearlet_visualize_change_map( VID(:,:,49:94+45), change_map_sc2, 3, colormap(jet(256)));
+shearlet_visualize_change_map( VID(:,:,1:91), CHANGE_MAP, 3, colormap(jet(256)));
