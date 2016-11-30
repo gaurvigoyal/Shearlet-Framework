@@ -1,12 +1,7 @@
 
-
 %%
 
-close all;
-
-%%
-
-% loads the video sequence
+% load the video sequence
 
 clear VID 
 
@@ -15,25 +10,26 @@ clear VID
 % [VID, COLOR_VID] = load_video_to_mat('walk-simple.avi',160, 1,100);
 % [VID, COLOR_VID] = load_video_to_mat('Sample0001_color.mp4', 160, 1239, 1350);
 
-% calculates the 3D Shearlet Transform
+% calculate the 3D Shearlet Transform
 
 clear COEFFS idxs
-
 [COEFFS,idxs] = shearlet_transform_3D(VID,46,91,[0 1 1], 3, 1);
 
 %%
 
 % parameters for the detection process
-LOWER_THRESHOLD = 0.1;  % old values was 0.01
-SPT_WINDOW = 11;          % old values was 7
+LOWER_THRESHOLD = 0.1;
+SPT_WINDOW = 11;
 PAUSE_BETWEEN_FRAMES = false;
+
+% detect spatio-temporal interesting points within the sequence
 
 close all;
 [COORDINATES, CHANGE_MAP] = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, PAUSE_BETWEEN_FRAMES);
 
 %%
 
-comparison_local_maxima_in_frame(VID(:,:,1:91), COLOR_VID(:,:,:,1:91), CHANGE_MAP, LOWER_THRESHOLD, SPT_WINDOW, PAUSE_BETWEEN_FRAMES, 3, colormap(jet(256)));  % buono boxing? centrato in 46, SCALA 2
+comparison_local_maxima_in_frame(VID(:,:,1:91), COLOR_VID(:,:,:,1:91), 19, CHANGE_MAP, LOWER_THRESHOLD, SPT_WINDOW, 3, colormap(jet(256)));  % buono boxing? centrato in 46, SCALA 2
 
 %%
 
