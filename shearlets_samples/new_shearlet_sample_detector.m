@@ -5,10 +5,7 @@
 
 clear VID 
 
-% [VID, COLOR_VID] = load_video_to_mat('person04_boxing_d1_uncomp.avi',160, 1,100); % parametri 1.5 e 5
 [VID, COLOR_VID] = load_video_to_mat('alessia_rectangle.mp4',160, 600,700);
-% [VID, COLOR_VID] = load_video_to_mat('walk-simple.avi',160, 1,100);
-% [VID, COLOR_VID] = load_video_to_mat('Sample0001_color.mp4', 160, 1239, 1350);
 
 % calculate the 3D Shearlet Transform
 
@@ -20,12 +17,11 @@ clear COEFFS idxs
 % parameters for the detection process
 LOWER_THRESHOLD = 0.1;
 SPT_WINDOW = 11;
-PAUSE_BETWEEN_FRAMES = false;
 
 % detect spatio-temporal interesting points within the sequence
 
 close all;
-[COORDINATES, CHANGE_MAP] = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, PAUSE_BETWEEN_FRAMES);
+[COORDINATES, CHANGE_MAP] = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, false);
 
 %%
 
@@ -33,17 +29,13 @@ comparison_local_maxima_in_frame(VID(:,:,1:91), COLOR_VID(:,:,:,1:91), 19, CHANG
 
 %%
 
-close all;
+[COUNTS] = comparison_points_over_time(VID(:,:,1:91), COORDINATES);
 
-load('kth_bg_averaged.mat');
-
-[~, FG_CENTROIDS] = comparison_mask_from_kth_video(VID(:,:,1:91), bg_averaged, 90);
-[TRANSLATED] = comparison_translate_points_by_centroid(COORDINATES, FG_CENTROIDS, VID);
-comparison_heatmap_from_points(VID, floor(TRANSLATED));
 
 %%
 
-[COUNTS] = comparison_points_over_time(VID(:,:,1:91), COORDINATES);
+comparison_heatmap_from_points(VID, floor(COORDINATES));
+
 
 %%
 
@@ -66,6 +58,19 @@ imshow(COLOR_VID(:,:,:,COUNTS_IND(4))./255);
 
 %%
 
+close all;
+
+shearlet_visualize_change_map( VID(:,:,1:91), CHANGE_MAP, 3, colormap(jet(256)));
+
+
+
+
+%%
+
+close all;
+
+load('kth_bg_averaged.mat');
+
 [FG_MASKS, FG_CENTROIDS] = comparison_mask_from_kth_video(VID(:,:,1:91), bg_averaged, 65);
 
 
@@ -75,16 +80,9 @@ imshow(COLOR_VID(:,:,:,COUNTS_IND(4))./255);
 
 %%
 
-% comparison_heatmap_from_points(VID, floor(TRANSLATED));
-comparison_heatmap_from_points(VID, floor(COORDINATES));
+comparison_heatmap_from_points(VID, floor(TRANSLATED));
 
 %%
-
-% XYZnew = FG_MASKS;
-% 
-% for i=1:size(FG_MASKS,3)
-%     XYZnew(:,:,i) = FG_MASKS(:,:,end-i+1);
-% end
 
 permuted = true;
 
@@ -98,9 +96,3 @@ close all;
 
 comparison_3d_visualization_from_points(VIS_FG_MASKS, COORDINATES, permuted);
 
-
-%%
-
-close all;
-
-shearlet_visualize_change_map( VID(:,:,1:91), CHANGE_MAP, 3, colormap(jet(256)));

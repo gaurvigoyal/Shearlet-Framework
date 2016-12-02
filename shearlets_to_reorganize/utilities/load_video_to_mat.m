@@ -1,6 +1,28 @@
 function [result, color_result] = load_video_to_mat( input_video, max_size, start_frame, end_frame)
-%LOAD_VIDEO_TO_MAT Summary of this function goes here
-%   Detailed explanation goes here
+%LOAD_VIDEO_TO_MAT Loads a video sequence both in grayscale and color
+%
+% Usage:
+%   [result, color_result] = load_video_to_mat('sequence.avi', 128, 100, 200)
+%           Loads the video clip represented by the file 'sequence.avi',
+%           from frame 100 to frame 200. Moreover, it resizes all the 
+%           frames so that  the maximum size (height or width) is not 
+%           greater than 128 pixels.
+%           
+% Parameters:
+%   input_video: the filename of the input video sequence.
+%   max_size: the maximum lateral size of every frame.
+%   start_frame: the frame to start loading from.
+%   end_frame: the last frame to load.
+%
+% Output:
+%   result: a 3-dimensional matrix representing the video sequence, with
+%           every frame converted to graylevels.
+%   color_result: a 3-dimensional matrix representing the original video 
+%                 sequence
+%
+%   See also ...
+%
+% 2016 Damiano Malafronte.
 
 vidObj = VideoReader(input_video);
 

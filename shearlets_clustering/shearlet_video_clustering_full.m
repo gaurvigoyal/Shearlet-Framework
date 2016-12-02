@@ -2,7 +2,7 @@ function [ cl_video_idx, cl_video_max ] = shearlet_video_clustering_full( X, cen
 %SHEARLET_VIDEO_CLUSTERING Clusters the descriptors passed w.r.t. the
 %chosen centroids
 %
-% Example:
+% Usage:
 %   [idx, maxs] = shearlet_video_clustering_full(X, centroids, prefix)
 %           Clusters the content of the video sequence represented in X by
 %           using the centroids passed to classify each 2D+T point.

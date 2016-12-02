@@ -8,22 +8,21 @@ function [ big_coeffs, shearletIdxs] = shearlet_transform_3D( VID, central_frame
 %           only a subset of all the time interval centered in frame 46 and
 %           wide 91 time frames (so, actually, only considering frames from
 %           23 to 113 in the sequence). The number of scales chosen is 3,
-%           with shearing levels equal to 0, 1 and 1. The last '1' in
+%           with shearing parameters equal to 0, 1 and 1. The last '1' in
 %           this function tells ShearLab3D to use the GPU for all the
 %           calculations (to increase the speed of all the process).
 %           
 % Parameters:
 %   VID: the 3D matrix representing the video sequence to process
 %   central_frame: the central frame of the temporal interval we want to
-%                  consider
-%   neigh_window: the number of total frames to consider
-%   shearLevels: the shearing levels for the different scales
-%   scales: the number of scales in the transform
-%   useGPU: use the GPU to make all the calculations (1 equals to TRUE)
+%   consi
+%   neigh_window: 
+%   shearLevels: 
+%   scales: 
+%   useGPU: 
 %
 % Output:
-%   coeffs: the four-dimensional structure representing all the
-%           coefficients calculated for the shearlet transform
+%   coeffs: 
 %   shearletIdxs: 
 %
 %   See also ...
