@@ -10,25 +10,20 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %           the values corresponding to the second and third scales. 
 %           Values below 0.1 will not be considered for the non-maxima
 %           supression process, as they will be set to zero, and the local
-%           window within which a value has to be the maximum to be
-%           considered as a detected point is a cube of side 2*9+1 pixels.
+%           window within which a value has to be 
 %           
 % Parameters:
-%   video: the matrix representing the video sequence
-%   coeffs: the four-dimensional matrix containing the shearlet coefficients
-%   scales: the set of scales to consider for the detection
-%   weights: the weights to use for each scale (not used, until now)
-%   min_threshold: the minumum value for a candidate point
-%   spt_window: the neighborhood to consider while searching for local
-%               maxima
-%   pause_between_frames: whether to pause or not during 
+%   video: 
+%   coeffs: 
+%   scale: 
+%   weights: 
+%   min_threshold: 
+%   spt_window: 
+%   pause_between_frames: 
 %
 % Output:
-%   coordinates: a matrix containing a set of triples (x,y,t) representing
-%                the coordinates of the spatio-temporal interest points
-%                that have been found by the process.
-%   change_map: a three-dimensional matrix containing the values for the
-%               interest measure considered to extract the points.
+%   coordinates:  
+%   change_map: 
 %
 %   See also ...
 %
@@ -39,14 +34,15 @@ if(isempty(weights))
 end
 
 % parameters controls
-if(scales > 5)
-    warning('shearlet_detect_points:scales_too_high', ...
-        'The number of scales is high, you could incur into memory issues while loading the corresponding shearlet system.');
+if(max_size < 16)
+        ME = MException('load_video_to_mat:tiny_max_size_for_frames', ...
+        'The max_size parameters must be greater than 16.');
+    throw(ME);
 end
 
-if(scales ~= numel(weights))
-    ME = MException('shearlet_detect_points:number_of_weights', ...
-        'You have to specify an equal number of weights and scales.');
+if(start_frame < 1 || start_frame > floor(vidObj.Duration * vidObj.FrameRate))
+    ME = MException('load_video_to_mat:negative_frame_index', ...
+        'Specify a valid value for the starting frame.');
     throw(ME);
 end
 
