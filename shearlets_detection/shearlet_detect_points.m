@@ -1,10 +1,56 @@
 function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, scales, weights, min_threshold, spt_window, pause_between_frames)
-%SHEARLET_DETECT_POINTS Summary of this function goes here
-%   Detailed explanation goes here
+%SHEARLET_DETECT_POINTS XXXX
+%
+% Usage:
+%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false)
+%           XXX
+%           
+% Parameters:
+%   video: 
+%   coeffs: 
+%   scale: 
+%   weights: 
+%   min_threshold: 
+%   spt_window: 
+%   pause_between_frames: 
+%
+% Output:
+%   coordinates:  
+%   change_map: 
+%
+%   See also ...
+%
+% 2016 Damiano Malafronte.
 
 if(isempty(weights))
     weights = ones(1,numel(scales));
 end
+
+% parameters controls
+if(max_size < 16)
+        ME = MException('load_video_to_mat:tiny_max_size_for_frames', ...
+        'The max_size parameters must be greater than 16.');
+    throw(ME);
+end
+
+if(start_frame < 1 || start_frame > floor(vidObj.Duration * vidObj.FrameRate))
+    ME = MException('load_video_to_mat:negative_frame_index', ...
+        'Specify a valid value for the starting frame.');
+    throw(ME);
+end
+
+if(end_frame < start_frame)
+    ME = MException('load_video_to_mat:invalid_end_frame', ...
+        'The ending frame cannot be before the staring one.');
+    throw(ME);
+end
+
+if(end_frame > floor(vidObj.Duration * vidObj.FrameRate))
+    warning('load_video_to_mat:end_frame_out_of_bounds', ...
+        'The ending frame was out of bound, set to be the last frame in the sequence.');
+    end_frame = floor(vidObj.Duration * vidObj.FrameRate);
+end
+
 
 st = tic;
 
