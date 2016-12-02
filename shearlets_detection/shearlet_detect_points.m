@@ -39,28 +39,28 @@ if(isempty(weights))
 end
 
 % parameters controls
-if(scales > 5)
-    warning('shearlet_detect_points:scales_too_high', ...
-        'The number of scales is high, you could incur into memory issues while loading the corresponding shearlet system.');
-end
-
-if(scales ~= numel(weights))
-    ME = MException('shearlet_detect_points:number_of_weights', ...
-        'You have to specify an equal number of weights and scales.');
-    throw(ME);
-end
-
-if(end_frame < start_frame)
-    ME = MException('load_video_to_mat:invalid_end_frame', ...
-        'The ending frame cannot be before the staring one.');
-    throw(ME);
-end
-
-if(end_frame > floor(vidObj.Duration * vidObj.FrameRate))
-    warning('load_video_to_mat:end_frame_out_of_bounds', ...
-        'The ending frame was out of bound, set to be the last frame in the sequence.');
-    end_frame = floor(vidObj.Duration * vidObj.FrameRate);
-end
+% if(scales > 5)
+%     warning('shearlet_detect_points:scales_too_high', ...
+%         'The number of scales is high, you could incur into memory issues while loading the corresponding shearlet system.');
+% end
+% 
+% if(scales ~= numel(weights))
+%     ME = MException('shearlet_detect_points:number_of_weights', ...
+%         'You have to specify an equal number of weights and scales.');
+%     throw(ME);
+% end
+% 
+% if(end_frame < start_frame)
+%     ME = MException('load_video_to_mat:invalid_end_frame', ...
+%         'The ending frame cannot be before the staring one.');
+%     throw(ME);
+% end
+% 
+% if(end_frame > floor(vidObj.Duration * vidObj.FrameRate))
+%     warning('load_video_to_mat:end_frame_out_of_bounds', ...
+%         'The ending frame was out of bound, set to be the last frame in the sequence.');
+%     end_frame = floor(vidObj.Duration * vidObj.FrameRate);
+% end
 
 
 st = tic;

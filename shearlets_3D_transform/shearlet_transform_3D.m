@@ -69,6 +69,11 @@ if(scales > 5)
         'The number of scales is high, you could incur into memory issues while loading the corresponding shearlet system.');
 end
 
+if(numel(shearLevels) ~= scales)
+    ME = MException('shearlet_transform_3D:wrong_shearlevels_number', ...
+        'The number of shearLevels must be equal to the number of scales.');
+    throw(ME);
+end
 
 % index of the first frame (and of the last one) to consider
 start_ind = central_frame - (neigh_window-1)/2;
