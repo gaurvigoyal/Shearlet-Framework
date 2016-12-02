@@ -24,48 +24,78 @@ function [ big_coeffs, shearletIdxs] = shearlet_transform_3D( VID, central_frame
 % Output:
 %   coeffs: the four-dimensional structure representing all the
 %           coefficients calculated for the shearlet transform
-%   shearletIdxs: 
+%   shearletIdxs: the auxiliary matrix representing a 1-1 correspondence
+%                 between the fourth index in the 'coeffs' matrix and the
+%                 scale/shearing parameters corresponding to the unique
+%                 shearlet which gave the corresponding coefficients as a
+%                 result
 %
 %   See also ...
 %
 % 2016 Damiano Malafronte.
 
-% impostazione di default per i livelli di shearing:
-% in questo modo si avranno 3x3, 5x5, 5x5 shearing nelle scale
+% default setup for the shearing levels, in this way there are going to be 
+% 3x3, 5x5, 5x5 shearings across the three scales used, for each pyramid
 if(isempty(shearLevels))
     shearLevels = [0 1 1];
 end
 
-% se non specificato dall'utente, non usa la GPU
+% if not specified by the user, does not use the GPU
 if(nargin < 5)
     useGPU = 0;
 end
 
-%
+% parameters controls
+if(central_frame < 1 || central_frame > size(VID,3))
+        ME = MException('shearlet_transform_3D:invalid_central_frame', ...
+        'The central frame of the subsequence must be between 1 and the number of total frames.');
+    throw(ME);
+end
+
+if(neigh_window < 51)
+    ME = MException('shearlet_transform_3D:neigh_window_value', ...
+        'Specify a bigger value for the neighborhood window, you could incur into problems with the ShearLab3D implementation.');
+    throw(ME);
+end
+
+if(scales < 1)
+    ME = MException('shearlet_transform_3D:scales_too_low', ...
+        'Specify a number of scales greater than zero.');
+    throw(ME);
+end
+
+if(scales > 5)
+    warning('shearlet_transform_3D:scales_too_high', ...
+        'The number of scales is high, you could incur into memory issues while loading the corresponding shearlet system.');
+end
+
+
+% index of the first frame (and of the last one) to consider
 start_ind = central_frame - (neigh_window-1)/2;
 end_ind = central_frame + (neigh_window-1)/2;
 
+% fixes possible invalid values for the two indexes
 start_ind = max(start_ind,1);
 end_ind = min(end_ind, size(VID,3));
 
-%
+% extracts from the video sequence only the frames to consider
 Xactual = VID(:,:,start_ind:end_ind);
 
-%
+% prepares the structures for the calculation of the transform
 st = tic;
 [Xfreq, ~, preparedFilters, dualFrameWeightsCurr, shearletIdxs] = SLprepareSerial3D(useGPU,Xactual,scales,shearLevels, true);
 fprintf('-- Time for Serial Preparation: %.4f seconds\n', toc(st));
 
 st = tic;
 
-%
+% initializes the resulting object containing all the coefficients
 big_coeffs = zeros(size(Xactual,1), size(Xactual,2), size(Xactual,3), size(shearletIdxs,1));
 
-%
+% calculates the coefficients for each shearlet within the system
 for j = 1:size(shearletIdxs,1)
     shearletIdx = shearletIdxs(j,:);
     
-    %%shearlet decomposition
+    % executes the shearlet decomposition
     [coeffs,~, dualFrameWeightsCurr,~] = SLsheardecSerial3D(Xfreq,shearletIdx,preparedFilters,dualFrameWeightsCurr);
     
     if(~useGPU)
@@ -76,7 +106,7 @@ for j = 1:size(shearletIdxs,1)
     
 end
 
-%
+% prints the total execution time for this routine
 fprintf('-- Time for Serial Decomposition: %.4f seconds\n', toc(st));
 
 end
