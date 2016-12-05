@@ -39,33 +39,15 @@ comparison_heatmap_from_points(VID, floor(COORDINATES));
 
 %%
 
-
 close all;
 
-% shearlet_frames_with_most_points(COLOR_VID, COUNTS, 4);
-
 shearlet_frames_with_most_points(COLOR_VID, COUNTS, [4], COORDINATES);
-
-% subplot(1,4,1);
-% imshow(COLOR_VID(:,:,:,COUNTS_IND(1))./255);
-% 
-% subplot(1,4,2);
-% imshow(COLOR_VID(:,:,:,COUNTS_IND(2))./255);
-% 
-% subplot(1,4,3);
-% imshow(COLOR_VID(:,:,:,COUNTS_IND(3))./255);
-% 
-% subplot(1,4,4);
-% imshow(COLOR_VID(:,:,:,COUNTS_IND(4))./255);
 
 %%
 
 close all;
 
 shearlet_visualize_change_map( VID(:,:,1:91), CHANGE_MAP, 3, colormap(jet(256)));
-
-
-
 
 %%
 
