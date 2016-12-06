@@ -5,7 +5,8 @@
 
 clear VID 
 
-[VID, COLOR_VID] = load_video_to_mat('alessia_rectangle.mp4',160, 600,700);
+video_filename = 'alessia_rectangle.mp4';
+[VID, COLOR_VID] = load_video_to_mat(video_filename,160, 600,700);
 
 % calculate the 3D Shearlet Transform
 
@@ -17,11 +18,17 @@ clear COEFFS idxs
 % parameters for the detection process
 LOWER_THRESHOLD = 0.05;
 SPT_WINDOW = 9;
+SCALES = [2 3];
 
 % detect spatio-temporal interesting points within the sequence
 
 close all;
-[COORDINATES, CHANGE_MAP] = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, false);
+
+output_name = shearlet_create_video_outname( video_filename, SCALES, LOWER_THRESHOLD, SPT_WINDOW);
+
+[COORDINATES, CHANGE_MAP] = shearlet_detect_points( VID(:,:,1:91), COEFFS, SCALES, [], LOWER_THRESHOLD, SPT_WINDOW, false, output_name);
+
+
 
 %%
 

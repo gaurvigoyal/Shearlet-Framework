@@ -3,13 +3,6 @@ function [coordinates] = shearlet_plot_graylevel_local_maxima( VID, cl_video_max
 %   Detailed explanation goes here
 
 
-
-% vidOut1 = VideoWriter(['outbox2_' save_filename]);
-% vidOut.Quality = 100;
-% vidOut.FrameRate = 25;
-% open(vidOut1);
-
-
 %
 if(nargin == 8)
     vidOut = VideoWriter(save_filename);
@@ -19,6 +12,7 @@ if(nargin == 8)
     outimg = 255*ones(size(VID(:,:,1),1),20+size(VID(:,:,1),2)*2,3);
 end
 
+%
 if(nargin < 7)
     visualization_cmap = colormap(jet(256));
     if(nargin < 6)
@@ -45,7 +39,7 @@ if(min_threshold < 0)
     min_threshold = 0;
 end
 
-% if the user specified it, pauses between each frame and 
+% if the user specified it, pauses between each frame and
 % shows a slice corresponding to the current spatio-temporal point
 if(pause_between_frames)
     num_plots = 3;
@@ -53,23 +47,30 @@ else
     num_plots = 2;
 end
 
-% 
-% [i, j, k] = shearlet_local_maxima_in_3D_matrix(cl_video_max, 0, window, size(VID));
+% extract points which are local maxima within a spatio-temporal
+% cube of size (2*window)+1, which value is higher than min_threshold
 [i, j, k] = shearlet_local_maxima_in_3D_matrix(cl_video_max, min_threshold, window, size(VID));
+% [i, j, k] = shearlet_local_maxima_in_3D_matrix(cl_video_max, 0, window, size(VID));
 
+% saves the coordinates in the output object
 coordinates = [i j k];
 
 fprintf('-- Found local maxima: %d.\n', size(i,1));
 
+% index used in the while loop to cycle over all the
+% frames of the sequence considered
 c=2;
 
 %
-figure('Position', [-1320 184 1266 594]);
+repeated_frames = 5;
 
-%
+% figure('Position', [-1320 184 1266 594]);
+figure;
+
+% cycle over the whole sequence
 while true
     
-    %
+    % selects the points found in the current frame
     id = find(k==c);
     
     %
@@ -78,8 +79,7 @@ while true
     
     subplot(1,num_plots, 2);
     
-    %     fprintf('Frame: %d..\n', c);
-    
+    %
     if(nargin >= 7)
         
         ttemp = cl_video_max(:,:,c);
@@ -89,11 +89,19 @@ while true
         
         imshow(ttemp);
         
-        if(nargin >= 8)
-            outimg(:, 1:size(VID(:,:,1),2), :) = cat(3, VID(:,:,c),VID(:,:,c),VID(:,:,c));
-            outimg(:,size(VID(:,:,1),2)+20+1:end, :) = ttemp * 255;
-            writeVideo(vidOut, outimg / 255.);
-        end
+        %         if(nargin >= 8)
+        %             %             outimg(:, 1:size(VID(:,:,1),2), :) = cat(3, VID(:,:,c),VID(:,:,c),VID(:,:,c));
+        %             %             outimg(:,size(VID(:,:,1),2)+20+1:end, :) = ttemp * 255;
+        %             %             writeVideo(vidOut, outimg / 255.);
+        %
+        %             ff = getframe(gcf);
+        %             data = ff.cdata(134:264, 81:515, :);
+        %
+        %             for rep=1:repeated_frames
+        %                 writeVideo(vidOut, data);
+        %             end
+        %
+        %         end
     else
         imshow(cl_video_max(:,:,c), [0 upper_limit]);
     end
@@ -103,10 +111,13 @@ while true
     if(size(id,1) > 0)
         
         subplot(1,num_plots,1);
+        
         hold on
         
+        %
         plot(j(id), i(id), 'ro', 'MarkerSize', 20, 'LineWidth', 5);
         
+        %
         if(pause_between_frames)
             for ind=1:size(id,1)
                 
@@ -122,24 +133,42 @@ while true
         end
         hold off
         
-        % waitforbuttonpress
+        
     end
     
+    if(nargin >= 8)
+        %             outimg(:, 1:size(VID(:,:,1),2), :) = cat(3, VID(:,:,c),VID(:,:,c),VID(:,:,c));
+        %             outimg(:,size(VID(:,:,1),2)+20+1:end, :) = ttemp * 255;
+        %             writeVideo(vidOut, outimg / 255.);
+        
+        ff = getframe(gcf);
+        data = ff.cdata(134:264, 81:515, :);
+        
+        for rep=1:repeated_frames
+            writeVideo(vidOut, data);
+        end
+        
+    end
+    
+    
+    %
+    %     if(nargin == 8)
     %         fig = getframe(gcf);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
-    %         writeVideo(vidOut1, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %         writeVideo(vidOut, fig.cdata);
+    %     end
     
     % sets a small pause, then increases the
     % current frame counter
-    pause(0.04);
+    pause(0.0001);
     c = c + 1;
     
     % if the end of the sequence has been reached,
@@ -147,13 +176,15 @@ while true
     % swapped with the one below it, in case the user
     % wants to see the sequence looping)
     if(c == 91)
-        %         c=2;
+        % c=2;
         break;
     end
     
 end
 
-% close(vidOut1);
+if(nargin == 8)
+    close(vidOut);
+end
 
 end
 

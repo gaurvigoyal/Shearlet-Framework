@@ -1,4 +1,4 @@
-function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, scales, weights, min_threshold, spt_window, pause_between_frames )
+function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, scales, weights, min_threshold, spt_window, pause_between_frames, output_filename)
 %SHEARLET_DETECT_POINTS Detects a set of spatio-temporal interest points in
 %the sequence passed as a parameter (more precisely, using the
 %corresponding shearlet coefficients, previously calculated)
@@ -7,12 +7,12 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false)
 %           Detects points in the 'video' matrix passed by considering the
 %           values inside the 'coeffs' object, only keeping into account of
-%           the values corresponding to the second and third scales. 
+%           the values corresponding to the second and third scales.
 %           Values below 0.1 will not be considered for the non-maxima
 %           supression process, as they will be set to zero, and the local
 %           window within which a value has to be the maximum to be
 %           considered as a detected point is a cube of side 2*9+1 pixels.
-%           
+%
 % Parameters:
 %   video: the matrix representing the video sequence
 %   coeffs: the four-dimensional matrix containing the shearlet coefficients
@@ -21,7 +21,7 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %   min_threshold: the minumum value for a candidate point
 %   spt_window: the neighborhood to consider while searching for local
 %               maxima
-%   pause_between_frames: whether to pause or not during 
+%   pause_between_frames: whether to pause or not during
 %
 % Output:
 %   coordinates: a matrix containing a set of triples (x,y,t) representing
@@ -63,7 +63,7 @@ end
 st = tic;
 i = 1;
 
-% structure to keep the temporary change maps 
+% structure to keep the temporary change maps
 % for the different scales used
 change_map_temp = cell(1, numel(scales));
 
@@ -72,14 +72,14 @@ for scale = scales
     
     % loads the corresponding shearlet coefficient indexes in memory
     load(strcat('cone_indexes_for_5x5_shearings_scale',int2str(scale),'.mat'))
-
+    
     ind_cone1_sc2 = c1(:);
     ind_cone2_sc2 = c2(:);
     ind_cone3_sc2 = c3(:);
     
-    % sums up all the contributions from the different shearings, 
+    % sums up all the contributions from the different shearings,
     % for the different cones
-    second_cone_map = sum(abs(coeffs(:,:,:, ind_cone2_sc2)),4);    
+    second_cone_map = sum(abs(coeffs(:,:,:, ind_cone2_sc2)),4);
     first_cone_map = sum(abs(coeffs(:,:,:, ind_cone1_sc2)),4);
     third_cone_map = sum(abs(coeffs(:,:,:, ind_cone3_sc2)),4);
     
@@ -88,11 +88,11 @@ for scale = scales
     change_map_temp{i} = second_cone_map .* combined_map;
     
     i = i + 1;
-
+    
 end
 
-% calculates the temporary values within the change map, 
-% by considering only the first of all the scales (or the 
+% calculates the temporary values within the change map,
+% by considering only the first of all the scales (or the
 % only one, if less than 2 scales are used)
 change_map = weights(1) * change_map_temp{1};
 
@@ -104,8 +104,12 @@ end
 % prints the running time for the procedure
 fprintf('-- Time to create the change map from SH coeffs (number of scales %d): %.4f seconds\n', numel(scales), toc(st));
 
-% looks for the spatio-temporal points and saves them 
+% looks for the spatio-temporal points and saves them
 % in the COORDINATES object
-[COORDINATES] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, spt_window, pause_between_frames, 3, colormap(jet(256)));
+if(nargin < 8)
+    [COORDINATES] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, spt_window, pause_between_frames, 3, colormap(jet(256)));
+else
+    [COORDINATES] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, spt_window, pause_between_frames, 3, colormap(jet(256)), output_filename);  
+end
 
 end
