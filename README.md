@@ -16,8 +16,8 @@ The following is an example of the function calls needed to load a video `walk-s
     LOWER_THRESHOLD = 0.1;
     SPT_WINDOW = 11;
     
-    % detects spatio-temporal interesting points within a subsequence of the original video 
-    COORDINATES = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, false);
+% detects spatio-temporal interesting points within a subsequence of the original video 
+COORDINATES = shearlet_detect_points( VID(:,:,1:91), COEFFS, [2 3], [], LOWER_THRESHOLD, SPT_WINDOW, false);
 ```
 
 The following is an expanded example for the sake of saving a sequence from the detection process
@@ -27,7 +27,7 @@ The following is an expanded example for the sake of saving a sequence from the 
 video_filename = 'alessia_rectangle.mp4';
 VID = load_video_to_mat(video_filename,160, 600,700);
 
-% calculate the 3D Shearlet Transform
+% calculate the shearlets coefficients
 COEFFS = shearlet_transform_3D(VID,46,91,[0 1 1], 3, 1);
 
 % parameters for the detection process
