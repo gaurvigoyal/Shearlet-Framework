@@ -1,10 +1,10 @@
-function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, scales, weights, min_threshold, spt_window, pause_between_frames, output_filename)
+function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, scales, weights, min_threshold, spt_window, cone_weights, pause_between_frames, output_filename)
 %SHEARLET_DETECT_POINTS Detects a set of spatio-temporal interest points in
 %the sequence passed as a parameter (more precisely, using the
 %corresponding shearlet coefficients, previously calculated)
 %
 % Usage:
-%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false)
+%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, [1 1 1], false, 'trial0001.avi')
 %           Detects points in the 'video' matrix passed by considering the
 %           values inside the 'coeffs' object, only keeping into account of
 %           the values corresponding to the second and third scales.
@@ -21,7 +21,9 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %   min_threshold: the minumum value for a candidate point
 %   spt_window: the neighborhood to consider while searching for local
 %               maxima
+%   cone_weights: the weights for the different cones 
 %   pause_between_frames: whether to pause or not during
+%   output_filename: the filename to save the video to
 %
 % Output:
 %   coordinates: a matrix containing a set of triples (x,y,t) representing
@@ -83,10 +85,13 @@ for scale = scales
     first_cone_map = sum(abs(coeffs(:,:,:, ind_cone1_sc2)),4);
     third_cone_map = sum(abs(coeffs(:,:,:, ind_cone3_sc2)),4);
     
-    combined_map = third_cone_map .* first_cone_map;
-    
-    change_map_temp{i} = second_cone_map .* combined_map;
-    
+%     combined_map = third_cone_map .* first_cone_map;
+%     change_map_temp{i} = second_cone_map .* combined_map;
+        
+    change_map_temp{i} = (cone_weights(1) * first_cone_map) .* ... 
+                         (cone_weights(2) * second_cone_map) .*  ...
+                         (cone_weights(3) * third_cone_map);
+
     i = i + 1;
     
 end
@@ -106,7 +111,7 @@ fprintf('-- Time to create the change map from SH coeffs (number of scales %d): 
 
 % looks for the spatio-temporal points and saves them
 % in the COORDINATES object
-if(nargin < 8)
+if(nargin < 9)
     [COORDINATES] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, spt_window, pause_between_frames, 3, colormap(jet(256)));
 else
     [COORDINATES] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, spt_window, pause_between_frames, 3, colormap(jet(256)), output_filename);  
