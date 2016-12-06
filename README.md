@@ -31,8 +31,8 @@ VID = load_video_to_mat(video_filename,160, 600,700);
 COEFFS = shearlet_transform_3D(VID,46,91,[0 1 1], 3, 1);
 
 % parameters setup
-LOWER_THRESHOLD = 0.05;
-SPT_WINDOW = 9;
+LOWER_THRESHOLD = 0.1;
+SPT_WINDOW = 11;
 SCALES = [2 3];
 
 % detects spatio-temporal interesting points within a subsequence of the original video 
