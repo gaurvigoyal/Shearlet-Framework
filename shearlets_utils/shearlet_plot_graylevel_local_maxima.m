@@ -1,7 +1,37 @@
-function [coordinates] = shearlet_plot_graylevel_local_maxima( VID, cl_video_max, min_threshold, window, pause_between_frames, upper_limit, visualization_cmap, save_filename)
-%SHEARLET_PLOT_GRAYLEVEL_LOCAL_MAXIMA Summary of this function goes here
-%   Detailed explanation goes here
-
+function [coordinates] = shearlet_plot_graylevel_local_maxima( video, change_map, min_threshold, window, pause_between_frames, upper_limit, visualization_cmap, save_filename)
+%SHEARLET_PLOT_GRAYLEVEL_LOCAL_MAXIMA Detects a set of spatio-temporal interest points in
+%the sequence passed as a parameter (more precisely, using the
+%corresponding shearlet coefficients, previously calculated)
+%
+% Usage:
+%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false)
+%           Detects points in the 'video' matrix passed by considering the
+%           values inside the 'coeffs' object, only keeping into account of
+%           the values corresponding to the second and third scales.
+%           Values below 0.1 will not be considered for the non-maxima
+%           supression process, as they will be set to zero, and the local
+%           window within which a value has to be the maximum to be
+%           considered as a detected point is a cube of side 2*9+1 pixels.
+%
+% Parameters:
+%   video: the matrix representing the video sequence
+%   change_map: the change map representing the interest measure to use 
+%               to extract spatio-temporal points
+%   min_threshold: the minumum value for a candidate point
+%   window: the neighborhood to consider while searching for local maxima
+%   pause_between_frames: whether to pause or not during
+%   upper_limit: XXX
+%   visualization_cmap: the colormap to use to visualize the change_map
+%   save_filename: XXX
+%
+% Output:
+%   coordinates: a matrix containing a set of triples (x,y,t) representing
+%                the coordinates of the spatio-temporal interest points
+%                that have been found by the process.
+%
+%   See also ...
+%
+% 2016 Damiano Malafronte.
 
 %
 if(nargin == 8)
@@ -9,7 +39,7 @@ if(nargin == 8)
     vidOut.Quality = 100;
     vidOut.FrameRate = 25;
     open(vidOut);
-    outimg = 255*ones(size(VID(:,:,1),1),20+size(VID(:,:,1),2)*2,3);
+    outimg = 255*ones(size(video(:,:,1),1),20+size(video(:,:,1),2)*2,3);
 end
 
 %
@@ -49,7 +79,7 @@ end
 
 % extract points which are local maxima within a spatio-temporal
 % cube of size (2*window)+1, which value is higher than min_threshold
-[i, j, k] = shearlet_local_maxima_in_3D_matrix(cl_video_max, min_threshold, window, size(VID));
+[i, j, k] = shearlet_local_maxima_in_3D_matrix(change_map, min_threshold, window, size(video));
 % [i, j, k] = shearlet_local_maxima_in_3D_matrix(cl_video_max, 0, window, size(VID));
 
 % saves the coordinates in the output object
@@ -73,37 +103,25 @@ while true
     % selects the points found in the current frame
     id = find(k==c);
     
-    %
+    % showing the current frame in the sequence
     subplot(1,num_plots,1);
-    imshow(VID(:,:,c), []);
+    imshow(video(:,:,c), []);
     
     subplot(1,num_plots, 2);
     
-    %
+    % if the user specifies a colormap, uses it to visualize the 
+    % change map, otherwise shows the map in grayscale
     if(nargin >= 7)
         
-        ttemp = cl_video_max(:,:,c);
+        ttemp = change_map(:,:,c);
         ttemp(ttemp > upper_limit) = upper_limit;
         ttemp = gray2ind(ttemp, 256);
         ttemp = ind2rgb(ttemp, visualization_cmap);
         
         imshow(ttemp);
         
-        %         if(nargin >= 8)
-        %             %             outimg(:, 1:size(VID(:,:,1),2), :) = cat(3, VID(:,:,c),VID(:,:,c),VID(:,:,c));
-        %             %             outimg(:,size(VID(:,:,1),2)+20+1:end, :) = ttemp * 255;
-        %             %             writeVideo(vidOut, outimg / 255.);
-        %
-        %             ff = getframe(gcf);
-        %             data = ff.cdata(134:264, 81:515, :);
-        %
-        %             for rep=1:repeated_frames
-        %                 writeVideo(vidOut, data);
-        %             end
-        %
-        %         end
     else
-        imshow(cl_video_max(:,:,c), [0 upper_limit]);
+        imshow(change_map(:,:,c), [0 upper_limit]);
     end
     
     
@@ -114,15 +132,17 @@ while true
         
         hold on
         
-        %
+        % plots the points found for this time frame
         plot(j(id), i(id), 'ro', 'MarkerSize', 20, 'LineWidth', 5);
         
-        %
+        % if specified, shows the spatial neighborhood around every 
+        % spatio-temporal point found in this frame, asking the user to 
+        % click a button between every point shown
         if(pause_between_frames)
             for ind=1:size(id,1)
                 
                 subplot(1,num_plots, 3);
-                imshow(imresize(VID(i(id(ind))-window:i(id(ind))+window, ...
+                imshow(imresize(video(i(id(ind))-window:i(id(ind))+window, ...
                     j(id(ind))-window:j(id(ind))+window,c), 13), []);
                 
                 if(pause_between_frames)
@@ -136,6 +156,9 @@ while true
         
     end
     
+    % if a filename is specified, saves the current figure content
+    % to a new frame of the video sequence (the lines still commented
+    % are meant to be used in some scenarios)
     if(nargin >= 8)
         %             outimg(:, 1:size(VID(:,:,1),2), :) = cat(3, VID(:,:,c),VID(:,:,c),VID(:,:,c));
         %             outimg(:,size(VID(:,:,1),2)+20+1:end, :) = ttemp * 255;
@@ -149,23 +172,7 @@ while true
         end
         
     end
-    
-    
-    %
-    %     if(nargin == 8)
-    %         fig = getframe(gcf);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %         writeVideo(vidOut, fig.cdata);
-    %     end
-    
+        
     % sets a small pause, then increases the
     % current frame counter
     pause(0.0001);

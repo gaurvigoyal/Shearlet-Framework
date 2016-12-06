@@ -4,7 +4,7 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %corresponding shearlet coefficients, previously calculated)
 %
 % Usage:
-%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false)
+%   [coordinates, change_map] = shearlet_detect_points(video, coeffs, [2 3], [], 0.1, 9, false, 'trial0001.avi')
 %           Detects points in the 'video' matrix passed by considering the
 %           values inside the 'coeffs' object, only keeping into account of
 %           the values corresponding to the second and third scales.
@@ -22,6 +22,7 @@ function [ COORDINATES, change_map ] = shearlet_detect_points( video, coeffs, sc
 %   spt_window: the neighborhood to consider while searching for local
 %               maxima
 %   pause_between_frames: whether to pause or not during
+%   output_filename: the filename to save the video to
 %
 % Output:
 %   coordinates: a matrix containing a set of triples (x,y,t) representing
