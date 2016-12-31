@@ -11,7 +11,7 @@ clear VID COEFFS idxs
 % loads the indexes for the 5x5 shearing matrices,
 % corresponding to the second scale and to the three cones
 
-load('cone_indexes_for_5x5_shearings.mat')
+load('cone_indexes_for_5x5_shearings_scale2.mat')
 
 ind_cone1_sc2 = c1(:);
 ind_cone2_sc2 = c2(:);
@@ -32,7 +32,7 @@ ind_cone3_sc3 = c3(:);
 % loads the video sequence
 
 % [VID, COLOR_VID] = load_video_to_mat('person01_handclapping_d4_uncomp.avi',160, 1,100); %parametri 1 e 7
-% [VID, COLOR_VID] = load_video_to_mat('person01_walking_d1_uncomp.avi',160, 1,100); %parametri 1 e 7
+[VID, COLOR_VID] = load_video_to_mat('person01_walking_d1_uncomp.avi',160, 1,100); %parametri 1 e 7
 % [VID, COLOR_VID] = load_video_to_mat('person01_running_d1_uncomp.avi',160, 1,100);
 % [VID, COLOR_VID] = load_video_to_mat('person01_running_d2_uncomp.avi',160, 1,100);
 % [VID, COLOR_VID] = load_video_to_mat('person03_walking_d1_uncomp.avi',160, 1,100);
@@ -68,7 +68,7 @@ ind_cone3_sc3 = c3(:);
 % [VID, COLOR_VID] = load_video_to_mat('7-0238.mp4', 160, 80, 180);
 
 
-[VID, COLOR_VID] = load_video_to_mat('trial_018.avi', 160, 80, 180);
+% [VID, COLOR_VID] = load_video_to_mat('trial_018.avi', 160, 80, 180);
 % [VID, COLOR_VID] = load_video_to_mat('trial_024.avi', 160, 80, 180);
 
 % calculates the 3D Shearlet Transform
@@ -243,9 +243,9 @@ shearlet_visualize_change_map( VID(:,:,1:91), change_map_sc2, 3, colormap(jet(25
 % calculates previously
 
 USED_MAP = change_map_sc2;
-LOWER_THRESHOLD = 0.4;
-SPT_WINDOW = 9;
-PAUSE_BETWEEN_FRAMES = false;
+LOWER_THRESHOLD = 0.2;
+SPT_WINDOW = 11;
+PAUSE_BETWEEN_FRAMES = true;
 
 
 % parametri usati (0.5, 11, 5) lunedi' pomeriggio
@@ -282,4 +282,4 @@ shearlet_show_descriptor_clustered_points(POINTS_DESCRIPTORS, CIDX, 4);
 
 % shows one of the clusters extracted
 
-shearlet_play_video_clustered_descriptors(VID(:,:,1:91), POINTS_DESCRIPTORS, COORDINATES, CIDX, 4);
+shearlet_play_video_clustered_descriptors(VID(:,:,1:91), POINTS_DESCRIPTORS, COORDINATES, CIDX, [1 3]);

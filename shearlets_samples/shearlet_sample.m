@@ -9,19 +9,28 @@ clear VID COEFFS idxs DESCR_MAT CTRS CL_IND CL_SORT
 % VID = load_video_to_mat('person01_walking_d1_uncomp.avi',160, 1,100);
 % VID = load_video_to_mat('person04_boxing_d1_uncomp.avi',160, 1,100);
 VID = load_video_to_mat('line_l.mp4',160, 400,500);
+% VID = load_video_to_mat('alessia_rectangle.mp4',160, 1100,1200);
 % VID = load_video_to_mat('person09_boxing_d4_uncomp.avi',160, 1,100);
 % VID = load_video_to_mat('WALK.avi',160, 1,100);
 
 [COEFFS,idxs] = shearlet_transform_3D(VID,46,91,[0 1 1], 3, 1);
 % DESCR_MAT = shearlet_descriptor(COEFFS, 37, 2, idxs, true, true);
-DESCR_MAT = shearlet_descriptor(COEFFS, 38, 3, idxs, true, true);
-[CL_IND, CTRS] = shearlet_cluster_coefficients(DESCR_MAT, 8, [size(COEFFS,1) size(COEFFS,2)]);
+
+%% 
+
+close all;
+
+DESCR_MAT = shearlet_descriptor(COEFFS, 37, 3, idxs, true, true);
+[CL_IND, CTRS] = shearlet_cluster_coefficients(DESCR_MAT, 10, [size(COEFFS,1) size(COEFFS,2)]);
 
 [sort_cl_image, SORT_CTRS] = shearlet_cluster_sort( CL_IND, CTRS);
 
-shearlet_cluster_image(sort_cl_image, 8, true, false);
+% sort_cl_image = shearlet_cluster_by_seeds(DESCR_MAT, COEFFS, SORT_CTRS);
+
+
+shearlet_cluster_image(sort_cl_image, 10, true, false);
     
-shearlet_overlay_cluster(VID(:,:,37), sort_cl_image, 8, true, true);
+shearlet_overlay_cluster(VID(:,:,37), sort_cl_image, 10, true, true);
 
 %% ESEMPIO CLUSTERING DI UN ALTRO FRAME DEL VIDEO BOXING A PARTIRE DAI CENTROIDI QUI SOPRA
 
@@ -71,7 +80,7 @@ shearlet_overlay_cluster(VID(:,:,65), sort_cl_image, 8, true, true);
 
 VID = load_video_to_mat('trial_001.mpeg',160, 100, 300);
 [COEFFS,idxs] = shearlet_transform_3D(VID,65,91,[0 1 1], 3, 1);
-DESCR_MAT = shearlet_descriptor(COEFFS, 46, 2, idxs, true);
+DESCR_MAT = shearlet_descriptor(COEFFS, 46, 3, idxs, true);
 
 CL_IND = shearlet_cluster_by_seeds(DESCR_MAT, COEFFS, SORT_CTRS);
 

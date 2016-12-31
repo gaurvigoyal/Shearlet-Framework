@@ -1,4 +1,4 @@
-function [ output_name ] = shearlet_create_video_outname( video_filename, scales, min_threshold, spt_window)
+function [ output_name ] = shearlet_create_video_outname( video_filename, scales, min_threshold, spt_window, cone_weights)
 %SHEARLET_CREATE_VIDEO_OUTNAME Creates a filename starting from the values
 %contained in the parameters passed.
 %
@@ -14,6 +14,7 @@ function [ output_name ] = shearlet_create_video_outname( video_filename, scales
 %   scales: the set of scales considered
 %   min_threshold: the minumum value for a candidate point
 %   spt_window: the neighborhood to consider while searching for local maxima
+%   cone_weights: XXX
 %
 % Output:
 %   output_name: the resulting filename
