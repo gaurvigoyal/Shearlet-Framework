@@ -79,14 +79,3 @@ CLUSTER_TO_SHOW = 5;
 shearlet_overlay_cluster(VID(:,:,TARGET_FRAME), CL_IND, CLUSTER_TO_SHOW, true, true);
 
 
-%% ESEMPIO EDGES
-
-close all;
-clear VID COEFFS idxs
-
-VID = load_video_to_mat('Sample0001_color.mp4', 160, 1190, 1400);
-[COEFFS,idxs] = shearlet_transform_3D(VID,94,91,[0 1 1], 3, 1);
-shearlet_average_edge_descriptor( VID(:,:,94), COEFFS, idxs, 46, 3);
-
-
-

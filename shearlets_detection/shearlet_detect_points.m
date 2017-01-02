@@ -43,11 +43,11 @@ if(isempty(weights))
 end
 
 % parameters controls
-if(scales ~= numel(weights))
-    ME = MException('shearlet_detect_points:number_of_weights', ...
-        'You have to specify an equal number of weights and scales.');
-    throw(ME);
-end
+% if(scales ~= numel(weights))
+%     ME = MException('shearlet_detect_points:number_of_weights', ...
+%         'You have to specify an equal number of weights and scales.');
+%     throw(ME);
+% end
 
 if(min_threshold < 0)
     warning('shearlet_detect_points:negative_min_threshold', ...
