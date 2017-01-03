@@ -14,6 +14,12 @@ limits = {[1 100], [1 100], [1 100], ...
           [1 100], [1 100], [1 100], ...
           [1 100], [1 100]};
          
+% specifies which scale of coefficients to use
+      
+SCALE_USED = 2;
+
+% processes every file
+
 for i=1:numel(filenames)
  
    % loads the i-th sequence
@@ -35,7 +41,7 @@ for i=1:numel(filenames)
    % structure (refer to others sample files for an example on how to 
    % calculate these centroids)
    
-   shearlet_video_clustering_full( VID(:,:,:), SORT_CTRS, name, true);
+   shearlet_video_clustering_full( VID(:,:,:), SORT_CTRS, SCALE_USED, name, true);
    
 end
 
