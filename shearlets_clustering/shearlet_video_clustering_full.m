@@ -56,7 +56,7 @@ while true
     %     completed = false;
     
     %
-    clear COEFFS;
+    clear COEFFS idxs;
     [COEFFS,idxs] = shearlet_transform_3D(X,ind,91,[0 1 1], 2, 1);
     
     %

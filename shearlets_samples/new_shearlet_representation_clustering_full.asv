@@ -1,0 +1,23 @@
+
+
+% files to be processed within the MATLAB path
+
+filenames = {'person02_boxing_d1_uncomp.avi', 'person02_boxing_d2_uncomp.avi', 'person01_handclapping_d4_uncomp.avi', ...
+             'person05_handwaving_d3_uncomp.avi', 'person04_jogging_d4_uncomp.avi', 'person04_running_d1_uncomp.avi', ...
+             'person02_walking_d3_uncomp.avi', 'person01_walking_d2_uncomp.avi'};
+
+% for each file, specify correctly the first and last frame to be loaded     
+         
+limits = {[1 100], [1 100], [1 100], ...
+          [1 100], [1 100], [1 100], ...
+          [1 100], [1 100]};
+         
+for i=1:numel(filenames)
+ 
+   VID = load_video_to_mat(filenames{i}, 160, limits{i}(1), limits{i}(2));
+   
+   if(size(VO
+   [~,name,~] = fileparts(filenames{i});
+   shearlet_video_clustering_full( VID(:,:,:), SORT_CTRS, name, true);
+   
+end
