@@ -37,7 +37,8 @@ t_start = 2;
 t_end= 90;
 ind = 46;
 
-% debug variable kept here
+% debug variable in case it's needed (some checks will be found
+% later in this function file)
 
 T_LIMIT = 0;
 

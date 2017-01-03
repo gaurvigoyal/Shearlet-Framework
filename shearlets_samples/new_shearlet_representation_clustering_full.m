@@ -41,7 +41,7 @@ for i=1:numel(filenames)
    % structure (refer to others sample files for an example on how to 
    % calculate these centroids)
    
-   shearlet_video_clustering_full( VID(:,:,:), SORT_CTRS, SCALE_USED, name, true);
+   shearlet_video_representation_clustering( VID(:,:,:), SORT_CTRS, SCALE_USED, name, true);
    
 end
 
