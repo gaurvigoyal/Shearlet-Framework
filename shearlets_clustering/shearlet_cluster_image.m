@@ -2,13 +2,6 @@ function [ cl_image, cl_bars, cl_rgb] = shearlet_cluster_image( cluster_idx, clu
 %SHEARLET_CLUSTER_IMAGE Summary of this function goes here
 %   Detailed explanation goes here
 
-%
-% cluster_map =  [0 0 1; 1 0 0; 0 1 0; ...
-%     1 1 0; 0 0 0; 0 1 1; ...
-%     1 0 1; 1 1 1; 0.5 0.5 0.5; ...
-%     0.6 0.6 0; 1 0.4 0.4; 0.2 1 0.3; ...
-%     0.9 0.8 0.1; 0.2 0.2 1];
-
 if(~exist('cluster_map'))
     cluster_map = shearlet_init_cluster_map;
 end
