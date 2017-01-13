@@ -7,7 +7,7 @@ clear VID COEFFS idxs
 
 % loads the video sequence
 
-[VID, COLOR_VID] = load_video_to_mat('person01_walking_d1.avi',160, 1,100); %parametri 1 e 7
+[VID, COLOR_VID] = load_video_to_mat('alessia_rectangle.mp4',160, 500,600); %parametri 1 e 7
 
 % calculates the 3D Shearlet Transform
 
